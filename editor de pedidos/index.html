@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            background-color: #FFFFFF; /* White */
+            color: #808080; /* Gray */
+        }
+        .order {
+            margin: 5px; /* Reduzido de 10px para 5px */
+            padding: 5px; /* Reduzido de 10px para 5px */
+            border: 1px solid #808080; /* Gray */
+        }
+        .pinned {
+            background-color: #FFFFFF; /* White */
+        }
+        button {
+            background-color: #808080; /* Gray */
+            color: #000000; /* Black */
+            margin-top: 5px; /* Reduzido de 10px para 5px */
+            border: none;
+            padding: 7px 16px; /* Reduzido de 15px 32px para 7px 16px */
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 12px; /* Reduzido de 16px para 12px */
+            transition-duration: 0.4s;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #000000; /* Black */
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div id="orderInput">
+        <input type="text" id="orderDescription" placeholder="Descrição do pedido"><br>
+        <input type="text" id="orderName" placeholder="Nome"><br>
+        <input type="text" id="orderPhone" placeholder="Número de telefone"><br>
+        <button onclick="addOrderDescription()">Adicionar Pedido</button>
+    </div>
+    <div id="orders"></div>
+
+    <script>
+        let orders = [];
+
+        function addOrderDescription() {
+            const orderDescription = document.getElementById('orderDescription').value;
+            const orderName = document.getElementById('orderName').value;
+            const orderPhone = document.getElementById('orderPhone').value;
+
+            if (orderDescription === '' || orderName === '' || orderPhone === '') {
+                alert('Por favor, insira uma descrição, nome e número de telefone para o pedido.');
+                return;
+            }
+
+            const order = {
+                description: orderDescription,
+                name: orderName,
+                phone: orderPhone,
+                pinned: false
+            };
+
+            orders.push(order);
+            document.getElementById('orderDescription').value = '';
+            document.getElementById('orderName').value = '';
+            document.getElementById('orderPhone').value = '';
+            renderOrders();
+        }
+
+        function removeOrder(index) {
+            orders.splice(index, 1);
+            renderOrders();
+        }
+
+        function pinOrder(index) {
+            orders[index].pinned = !orders[index].pinned;
+            renderOrders();
+        }
+
+        function renderOrders() {
+            const ordersDiv = document.getElementById('orders');
+            ordersDiv.innerHTML = ''; // Limpa a div de pedidos
+
+            for (let i = 0; i < orders.length; i++) {
+                const order = orders[i];
+
+                // Cria um novo elemento div para cada pedido
+                const orderDiv = document.createElement('div');
+                orderDiv.className = 'order';
+                if (order.pinned) {
+                    orderDiv.classList.add('pinned');
+                }
+
+                // Adiciona a descrição, nome e telefone do pedido à div
+                orderDiv.innerHTML = `
+                    <p>Descrição: ${order.description}</p>
+                    <p>Nome: ${order.name}</p>
+                    <p>Telefone: ${order.phone}</p>
+                    <button onclick="removeOrder(${i})">Remover Pedido</button>
+                    <button onclick="pinOrder(${i})">${order.pinned ? 'Desafixar' : 'Fixar'}</button>
+                `;
+
+                // Adiciona a div do pedido à div de pedidos
+                ordersDiv.appendChild(orderDiv);
+            }
+        }
+    </script>
+</body>
+</html>
